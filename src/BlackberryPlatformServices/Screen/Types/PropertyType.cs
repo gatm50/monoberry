@@ -1,7 +1,7 @@
 
-namespace BlackberryPlatformServices.Screen
+namespace BlackberryPlatformServices.Screen.Types
 {
-	public enum Property : int {
+	public enum PropertyType : int {
 		SCREEN_PROPERTY_BUFFER_SIZE = 5,
 		SCREEN_PROPERTY_EGL_HANDLE = 12,
 		SCREEN_PROPERTY_FORMAT = 14,

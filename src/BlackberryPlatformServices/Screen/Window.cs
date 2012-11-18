@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using BlackberryPlatformServices.Screen.Types;
 
 namespace BlackberryPlatformServices.Screen
 {
@@ -17,47 +18,48 @@ namespace BlackberryPlatformServices.Screen
 		static extern int screen_destroy_window (IntPtr win);
 
 		[DllImport ("screen")]
-		static extern int screen_set_window_property_iv (IntPtr win, Property pname, ref int param);
+        static extern int screen_set_window_property_iv(IntPtr win, PropertyType pname, ref int param);
 
 		[DllImport ("screen")]
-		static extern int screen_get_window_property_iv (IntPtr win, Property pname, [Out] int[] param);
+        static extern int screen_get_window_property_iv(IntPtr win, PropertyType pname, [Out] int[] param);
 
 		[DllImport ("screen")]
-		static extern int screen_get_window_property_pv (IntPtr win, Property pname, [Out] IntPtr[] param);
+        static extern int screen_get_window_property_pv(IntPtr win, PropertyType pname, [Out] IntPtr[] param);
 
 		[DllImport ("screen")]
 		static extern int screen_create_window_buffers (IntPtr win, int count);
 
 		[DllImport ("screen")]
-		static extern int screen_set_window_property_cv (IntPtr win, Property pname, int len, byte[] param);
+        static extern int screen_set_window_property_cv(IntPtr win, PropertyType pname, int len, byte[] param);
 
 		[DllImport ("screen", SetLastError = true)]
-		static extern int screen_post_window (IntPtr win, IntPtr buffer, int rect_count, [In] int[] dirty_rects, Flushing flushing);
+        static extern int screen_post_window(IntPtr win, IntPtr buffer, int rect_count, [In] int[] dirty_rects, FlushingType flushing);
 
 		Context context;
 		IntPtr handle;
 		public IntPtr Handle { get { return handle; } }
 
-		public Usage Usage {
+        public UsageFlagType Usage
+        {
 			get {
-				return (Usage)GetIntProperty (Property.SCREEN_PROPERTY_USAGE);
+                return (UsageFlagType)GetIntProperty(PropertyType.SCREEN_PROPERTY_USAGE);
 			}
 
 			set {
-				SetIntProperty (Property.SCREEN_PROPERTY_USAGE, (int)value);
+                SetIntProperty(PropertyType.SCREEN_PROPERTY_USAGE, (int)value);
 			}
 		}
 
 		public bool IsVisible {
 			get {
-				return GetIntProperty (Property.SCREEN_PROPERTY_VISIBLE) == 1;
+                return GetIntProperty(PropertyType.SCREEN_PROPERTY_VISIBLE) == 1;
 			}
 			set {
-				SetIntProperty (Property.SCREEN_PROPERTY_VISIBLE, value ? 1 : 0);
+                SetIntProperty(PropertyType.SCREEN_PROPERTY_VISIBLE, value ? 1 : 0);
 			}
 		}
 
-		public int GetIntProperty (Property p)
+        public int GetIntProperty(PropertyType p)
 		{
 			var result = new int[] { 0 };
 			if (screen_get_window_property_iv (handle, p, result) != 0) {
@@ -66,7 +68,7 @@ namespace BlackberryPlatformServices.Screen
 			return result [0];
 		}
 
-		public void SetIntProperty (Property p, int val)
+        public void SetIntProperty(PropertyType p, int val)
 		{
 			if (screen_set_window_property_iv (handle, p, ref val) != 0) {
 				throw new Exception ("Unable to set window property " + p);
@@ -87,13 +89,13 @@ namespace BlackberryPlatformServices.Screen
 
 		public List<Buffer> Buffers {
 			get {
-				int count = GetIntProperty (Property.SCREEN_PROPERTY_RENDER_BUFFER_COUNT);
+                int count = GetIntProperty(PropertyType.SCREEN_PROPERTY_RENDER_BUFFER_COUNT);
 				if (count == 0) {
 					return new List<Buffer> ();
 				}
 
 				var bufs = new IntPtr[count];
-				screen_get_window_property_pv (handle, Property.SCREEN_PROPERTY_RENDER_BUFFERS, bufs);
+                screen_get_window_property_pv(handle, PropertyType.SCREEN_PROPERTY_RENDER_BUFFERS, bufs);
 				var list = new List<Buffer>();
 				foreach (var i in bufs) {
 					list.Add (new Buffer (context, i));
@@ -105,7 +107,7 @@ namespace BlackberryPlatformServices.Screen
 		public int Width {
 			get {
 				var rect = new int [2];
-				screen_get_window_property_iv (handle, Property.SCREEN_PROPERTY_BUFFER_SIZE, rect);
+                screen_get_window_property_iv(handle, PropertyType.SCREEN_PROPERTY_BUFFER_SIZE, rect);
 				return rect [0];
 			}
 		}
@@ -113,7 +115,7 @@ namespace BlackberryPlatformServices.Screen
 		public int Height {
 			get {
 				var rect = new int [2];
-				screen_get_window_property_iv (handle, Property.SCREEN_PROPERTY_BUFFER_SIZE, rect);
+                screen_get_window_property_iv(handle, PropertyType.SCREEN_PROPERTY_BUFFER_SIZE, rect);
 				return rect [1];
 			}
 		}
@@ -121,7 +123,7 @@ namespace BlackberryPlatformServices.Screen
 		public string Identifier {
 			set {
 				byte[] chars = Encoding.UTF8.GetBytes (value);
-				screen_set_window_property_cv(handle, Property.SCREEN_PROPERTY_ID_STRING, chars.Length, chars);
+                screen_set_window_property_cv(handle, PropertyType.SCREEN_PROPERTY_ID_STRING, chars.Length, chars);
 			}
 		}
 

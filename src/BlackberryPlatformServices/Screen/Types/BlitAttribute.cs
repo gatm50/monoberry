@@ -1,5 +1,5 @@
 
-namespace BlackberryPlatformServices.Screen
+namespace BlackberryPlatformServices.Screen.Types
 {
 	public enum BlitAttribute : int {
 		SCREEN_BLIT_END = 0,

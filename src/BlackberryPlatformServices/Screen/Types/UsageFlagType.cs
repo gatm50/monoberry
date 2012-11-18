@@ -1,9 +1,9 @@
 using System;
 
-namespace BlackberryPlatformServices.Screen
+namespace BlackberryPlatformServices.Screen.Types
 {
 	[Flags]
-	public enum Usage : int {
+	public enum UsageFlagType : int {
 		SCREEN_USAGE_DISPLAY = (1 << 0),
 		SCREEN_USAGE_READ = (1 << 1),
 		SCREEN_USAGE_WRITE = (1 << 2),

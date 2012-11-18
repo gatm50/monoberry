@@ -1,6 +1,6 @@
 using System;
 
-namespace BlackberryPlatformServices.Screen
+namespace BlackberryPlatformServices.Screen.Types
 {
 	[Flags]
 	public enum ContextType : int {

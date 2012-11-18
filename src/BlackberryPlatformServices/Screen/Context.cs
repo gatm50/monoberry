@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using BlackberryPlatformServices.Screen.Types;
 
 namespace BlackberryPlatformServices.Screen
 {
@@ -49,12 +50,12 @@ namespace BlackberryPlatformServices.Screen
 			switch (e.Type) {
 			case EventType.SCREEN_EVENT_CLOSE:
 				if (OnCloseWindow != null) {
-					OnCloseWindow (new Window (this, e.GetIntPtrProperty (Property.SCREEN_PROPERTY_WINDOW)));
+                    OnCloseWindow(new Window(this, e.GetIntPtrProperty(PropertyType.SCREEN_PROPERTY_WINDOW)));
 				}
 				break;
 			case EventType.SCREEN_EVENT_CREATE:
 				if (OnCreateWindow != null) {
-					OnCreateWindow (new Window (this, e.GetIntPtrProperty (Property.SCREEN_PROPERTY_WINDOW)));
+                    OnCreateWindow(new Window(this, e.GetIntPtrProperty(PropertyType.SCREEN_PROPERTY_WINDOW)));
 				}
 				break;
 			case EventType.SCREEN_EVENT_MTOUCH_TOUCH:

@@ -4,6 +4,7 @@ using BlackberryPlatformServices;
 using BlackberryPlatformServices.Camera;
 using BlackberryPlatformServices.Dialog;
 using BlackberryPlatformServices.Screen;
+using BlackberryPlatformServices.Screen.Types;
 
 namespace helloworld
 {
