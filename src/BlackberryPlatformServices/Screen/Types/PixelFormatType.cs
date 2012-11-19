@@ -1,7 +1,13 @@
-﻿
+﻿//
+//// Authors:
+//   Gustavo Torrico (gatm50@gmail.com)
+//// Licensed under the terms of the Microsoft Public License (MS-PL)
+//// Copyright 2012 Cup-Coffee, ( http://cup-coffe.blogspot.com )
+//
+
 namespace BlackberryPlatformServices.Screen.Types
 {
-    public enum PixelFormatType: int
+    public enum PixelFormatType : int
     {
         SCREEN_FORMAT_BYTE = 1,
         SCREEN_FORMAT_RGBA4444 = 2,
@@ -21,6 +27,6 @@ namespace BlackberryPlatformServices.Screen.Types
         SCREEN_FORMAT_YVYU = 16,
         SCREEN_FORMAT_V422 = 17,
         SCREEN_FORMAT_AYUV = 18,
-        SCREEN_FORMAT_NFORMATS,
+        SCREEN_FORMAT_NFORMATS
     }
 }

@@ -1,4 +1,10 @@
-﻿
+﻿//
+//// Authors:
+//   Gustavo Torrico (gatm50@gmail.com)
+//// Licensed under the terms of the Microsoft Public License (MS-PL)
+//// Copyright 2012 Cup-Coffee, ( http://cup-coffe.blogspot.com )
+//
+
 namespace BlackberryPlatformServices.Screen.Types
 {
     public enum WindowMetricCountType : int
@@ -20,6 +26,6 @@ namespace BlackberryPlatformServices.Screen.Types
         SCREEN_WINDOW_METRIC_UPDATE_COUNT = 14,
         SCREEN_WINDOW_METRIC_UPDATE_PIXELS = 15,
         SCREEN_WINDOW_METRIC_UPDATE_READS = 16,
-        SCREEN_WINDOW_METRIC_UPDATE_WRITES = 17,
+        SCREEN_WINDOW_METRIC_UPDATE_WRITES = 17
     }
 }

@@ -42,6 +42,13 @@
     <Compile Include="Navigator.cs" />
     <Compile Include="PlatformServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screen\Blit.cs" />
+    <Compile Include="Screen\Device.cs" />
+    <Compile Include="Screen\Display.cs" />
+    <Compile Include="Screen\ScreenDebugging.cs" />
+    <Compile Include="Screen\ScreenEffect.cs" />
+    <Compile Include="Screen\ScreenGroup.cs" />
+    <Compile Include="Screen\ScreenPixmaps.cs" />
     <Compile Include="Screen\Types\AlphaModeType.cs" />
     <Compile Include="Screen\Types\BlitAttribute.cs" />
     <Compile Include="Screen\Buffer.cs" />
