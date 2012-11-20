@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using BlackberryPlatformServices.Screen.Types;
 
@@ -749,7 +751,34 @@ namespace BlackberryPlatformServices.Screen
         IntPtr _buffer;
 
         #region Properties
+        public Action OnClose { get; set; }
+        public Action OnCreate { get; set; }
+
         public IntPtr Handle { get { return _handle; } }
+
+        internal bool HandleEvent(ScreenEvent ev)
+        {
+            Debug.Print("Window  XX {0}: Shall handle {1} event.", Handle, ev.Type);
+            switch (ev.Type)
+            {
+                case EventType.SCREEN_EVENT_CLOSE:
+                    if (OnClose != null)
+                    {
+                        OnClose();
+                        return true;
+                    }
+                    break;
+                case EventType.SCREEN_EVENT_CREATE:
+                    if (OnCreate != null)
+                    {
+                        OnCreate();
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
+        }
 
         public UsageFlagType Usage
         {
@@ -761,6 +790,32 @@ namespace BlackberryPlatformServices.Screen
             set
             {
                 SetIntProperty(PropertyType.SCREEN_PROPERTY_USAGE, new int[] { (int)value });
+            }
+        }
+
+        public TransparencyTypes Transparency
+        {
+            get
+            {
+                return (TransparencyTypes)GetIntProperty(PropertyType.SCREEN_PROPERTY_TRANSPARENCY);
+            }
+
+            set
+            {
+                SetIntProperty(PropertyType.SCREEN_PROPERTY_TRANSPARENCY, new int[] { (int)value });
+            }
+        }
+
+        public PixelFormatType PixelFormat
+        {
+            get
+            {
+                return (PixelFormatType)GetIntProperty(PropertyType.SCREEN_PROPERTY_FORMAT);
+            }
+
+            set
+            {
+                SetIntProperty(PropertyType.SCREEN_PROPERTY_FORMAT, new int[] { (int)value });
             }
         }
 
@@ -832,6 +887,12 @@ namespace BlackberryPlatformServices.Screen
                 this.SetCharProperty(PropertyType.SCREEN_PROPERTY_ID_STRING, chars);
             }
         }
+
+        public int Color
+        {
+            set { this.SetIntProperty(PropertyType.SCREEN_PROPERTY_COLOR, new int[] { (int)value }); }
+        }
+
         #endregion
 
         public Window(Context ctx, WindowType type = WindowType.SCREEN_APPLICATION_WINDOW)
@@ -920,6 +981,7 @@ namespace BlackberryPlatformServices.Screen
                 throw new Exception("Unable to join window to group.");
         }
 
+        #region Get-Set Properties
         public int GetIntProperty(PropertyType p)
         {
             var result = new int[] { 0 };
@@ -979,6 +1041,7 @@ namespace BlackberryPlatformServices.Screen
             if (screen_set_window_property_pv(_handle, p, val) != 0)
                 throw new Exception("Unable to set window property " + p);
         }
+        #endregion
 
         public void LeaveWindowGroup()
         {
@@ -1025,19 +1088,24 @@ namespace BlackberryPlatformServices.Screen
         {
             var dirty = new int[] { 0, 0, Width, Height };
             // Flushing.SCREEN_WAIT_IDLE bombs on the PlayBook, lets use 0 (undefined, but used in samples!) for now.
-            if (screen_post_window(_handle, buffer.buffer, 1, dirty, 0) != 0)
+            if (screen_post_window(_handle, buffer.Handle, 1, dirty, 0) != 0)
                 throw new Exception("Unable to render buffer to window!!");
+        }
+
+        public void Render(Buffer buf, Rectangle rect, FlushingType flush)
+        {
+            Console.WriteLine("Rendering {0}", rect);
+            var dirty = new int[] { rect.Left, rect.Top, rect.Width, rect.Height };
+            if (screen_post_window(_handle, buf.Handle, 1, dirty, flush) != 0)
+            {
+                throw new Exception("Unable to render buffer to window!!");
+            }
         }
 
         public void SetDimensions(int width, int height)
         {
             var values = new int[2] { width, height };
             this.SetIntProperty(PropertyType.SCREEN_PROPERTY_BUFFER_SIZE, values);
-        }
-
-        public int Color
-        {
-            set { this.SetIntProperty(PropertyType.SCREEN_PROPERTY_COLOR, new int[] { (int)value }); }
         }
     }
 }

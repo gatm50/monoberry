@@ -38,6 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExampleBlackberryDocs.cs" />
+    <Compile Include="ExampleHelloWorld.cs" />
+    <Compile Include="ExamplePaint.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

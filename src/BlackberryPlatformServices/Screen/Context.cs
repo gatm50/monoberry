@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using BlackberryPlatformServices.Screen.Types;
+using System.Collections.Generic;
 
 namespace BlackberryPlatformServices.Screen
 {
@@ -19,22 +20,61 @@ namespace BlackberryPlatformServices.Screen
 		static extern int screen_stop_events (IntPtr ctx);
 
 		[DllImport ("screen")]
+		static extern int screen_flush_context (IntPtr ctx, FlushingType flags);
+
+		[DllImport ("screen")]
+		static extern int screen_flush_blits (IntPtr ctx, FlushingType flags);
+
+		[DllImport ("screen")]
 		static extern int screen_get_domain ();
+
+		[DllImport ("screen")]
+		static extern int screen_get_context_property_iv (IntPtr ctx, PropertyType property, out int param);
+
+		[DllImport ("screen")]
+        static extern int screen_get_context_property_pv(IntPtr ctx, PropertyType property, [Out] IntPtr[] param);
 
 		IntPtr handle;
 		public IntPtr Handle { get { return handle; } }
-		private int eventDomain;
+		int eventDomain;
+		bool disposed = false;
+		ContextType type;
 
-		public Action<Window> OnCloseWindow { get; set; }
-		public Action<Window> OnCreateWindow { get; set; }
+		public Action<ScreenEvent> OnCloseWindow { get; set; }
+		public Action<ScreenEvent> OnCreateWindow { get; set; }
 		public Action<int,int> OnFingerTouch { get; set; }
 		public Action<int,int> OnFingerMove { get; set; }
 		public Action<int,int> OnFingerRelease { get; set; }
 
-		public Context()
+		private static IDictionary<ContextType, Context> instances = new Dictionary<ContextType, Context> ();
+		IDictionary<IntPtr, Window> windows = new Dictionary<IntPtr, Window> ();
+
+		public static Context GetInstance (ContextType type)
+		{
+			lock (typeof (Context)) {
+				Context ctx;
+				if (!instances.TryGetValue (type, out ctx)) {
+					ctx = new Context (type);
+					instances.Add (type, ctx);
+				}
+				return ctx;
+			}
+		}
+
+		static void RemoveInstance (ContextType type)
+		{
+			lock (typeof (Context)) {
+				if (instances.ContainsKey (type)) {
+					instances.Remove (type);
+				}
+			}
+		} 
+
+		public Context (ContextType type)
 		{
 			PlatformServices.Initialize ();
-			if (screen_create_context (out handle, ContextType.SCREEN_APPLICATION_CONTEXT) != 0) {
+			this.type = type;
+			if (screen_create_context (out handle, type) != 0) {
 				// TODO: read errno to describe problem
 				throw new Exception ("Unable to create screen context");
 			}
@@ -43,19 +83,43 @@ namespace BlackberryPlatformServices.Screen
 			PlatformServices.AddEventHandler (eventDomain, HandleEvent);
 		}
 
+		internal void RegisterWindow (Window win) {
+			windows.Add (win.Handle, win);
+		}
+
+		internal void UnregisterWindow (Window win) {
+			windows.Remove (win.Handle);
+		}
+
+		bool HandleWindowEvent (ScreenEvent ev) {
+            var handle = ev.GetIntPtrProperty(PropertyType.SCREEN_PROPERTY_WINDOW);
+			if (!windows.ContainsKey (handle)) {
+				return false;
+			}
+			windows [handle].HandleEvent (ev);
+			return true;
+		}
+
 		void HandleEvent (IntPtr eventHandle)
 		{
 			var e = ScreenEvent.FromEventHandle (eventHandle);
 
+			if (e.Type == EventType.SCREEN_EVENT_CLOSE ||
+			    e.Type == EventType.SCREEN_EVENT_CREATE) {
+				if (HandleWindowEvent (e) ) {
+					return;
+				}
+			}
+
 			switch (e.Type) {
 			case EventType.SCREEN_EVENT_CLOSE:
 				if (OnCloseWindow != null) {
-                    OnCloseWindow(new Window(this, e.GetIntPtrProperty(PropertyType.SCREEN_PROPERTY_WINDOW)));
+					OnCloseWindow (e);
 				}
 				break;
 			case EventType.SCREEN_EVENT_CREATE:
 				if (OnCreateWindow != null) {
-                    OnCreateWindow(new Window(this, e.GetIntPtrProperty(PropertyType.SCREEN_PROPERTY_WINDOW)));
+					OnCreateWindow (e);
 				}
 				break;
 			case EventType.SCREEN_EVENT_MTOUCH_TOUCH:
@@ -75,16 +139,54 @@ namespace BlackberryPlatformServices.Screen
 				break;
 			default:
 				Console.WriteLine ("UNHANDLED SCREEN EVENT, TYPE: {0}", e.Type);
+				if (e.Type == EventType.SCREEN_EVENT_PROPERTY) {
+                    Console.WriteLine(" - Name: {0}", (PropertyType)e.GetIntProperty(PropertyType.SCREEN_PROPERTY_NAME));
+				}
 				break;
 			}
 
 		}
 
+		public void FlushBlits ()
+		{
+			if (screen_flush_blits (handle, FlushingType.SCREEN_WAIT_IDLE) != 0) {
+				throw new Exception ("Unable to flush blits.");
+			}
+		}
+
+		public void Flush ()
+		{
+			if (screen_flush_context (handle, 0) != 0) {
+				throw new Exception ("Unable to flush context");
+			}
+		}
+
+		public List<Display> Displays {
+			get {
+				int count;
+				screen_get_context_property_iv (handle, PropertyType.SCREEN_PROPERTY_DISPLAY_COUNT, out count);
+				var handles = new IntPtr [count];
+                screen_get_context_property_pv(handle, PropertyType.SCREEN_PROPERTY_DISPLAYS, handles);
+				var displays = new List<Display> ();
+				foreach (var i in handles) {
+					displays.Add (new Display (i));
+				}
+				return displays;
+			}
+		}
+
 		public void Dispose ()
 		{
+			if (disposed) {
+				return;
+			}
+
 			PlatformServices.RemoveEventHandler (eventDomain);
 			screen_stop_events (handle);
 			screen_destroy_context (handle);
+			RemoveInstance (type);
+
+			disposed = true;
 		}
 	}
 	

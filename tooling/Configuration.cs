@@ -8,8 +8,10 @@ namespace MonoBerry.Tool
 {
 	public struct Device {
 		public string Name;
-		public string Ip;
+		public string IP;
 		public string Password;
+		public string PIN;
+		public Architecture Architecture;
 	}
 
     public class Configuration
@@ -21,13 +23,23 @@ namespace MonoBerry.Tool
 
 		public string NativeSDKPath { get { return Get ("nativesdk"); } }
 		public string Location { get { return Get ("location"); } }
+		public string SSHPublicKey { get { return Get ("public_key"); } }
+		public string SSHPrivateKey { get { return Get ("private_key"); } }
+		public string DebugToken { get { return Get ("debug_token"); } }
+		public string CSKPassword { get { return Get ("csk_password"); } }
 
 		public string ConfigFile {
 			get {
 				return configFile ?? Path.Combine (HomeDir, (IsUNIX ? "." : "_") + "monoberryrc");
 			}
 		}
-				
+
+		public string DefaultConfigDir {
+			get {
+				return configFile ?? Path.Combine (HomeDir, (IsUNIX ? "." : "_") + "monoberry");
+			}
+		}
+
 		public bool IsUNIX {
 			get {
 				return Environment.OSVersion.Platform == PlatformID.Unix ||
@@ -94,6 +106,9 @@ namespace MonoBerry.Tool
 				switch (key) {
 				case "location": return FindLocation ();
 				case "nativesdk": return FindNativeSDK ();
+				case "debug_token": return Path.Combine (DefaultConfigDir, "debugtoken.bar");
+				case "private_key": return Path.Combine (DefaultConfigDir, "id_rsa");
+				case "public_key": return Path.Combine (DefaultConfigDir, "id_rsa.pub");
 				}
 			}
 
@@ -114,10 +129,18 @@ namespace MonoBerry.Tool
 				var sec = section as IConfig;
 				if (sec.Name.StartsWith ("device.")) {
 					var name = sec.Name.Substring ("device.".Length);
+					Architecture arch;
+					try {
+						arch = Architecture.FromName (sec.GetString ("arch"));
+					} catch {
+						arch = Architecture.ARM;
+					}
 					devices.Add (name, new Device {
 						Name = name,
-						Ip = sec.GetString ("ip"),
-						Password = sec.GetString ("password")
+						IP = sec.GetString ("ip"),
+						Password = sec.GetString ("password"),
+						PIN = sec.GetString ("pin"),
+						Architecture = arch
 					}); 
 				}
 			}

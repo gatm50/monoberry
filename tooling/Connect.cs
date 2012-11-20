@@ -5,37 +5,28 @@ using System.IO;
 
 namespace MonoBerry.Tool
 {
-	public class Debug : Command
+	public class Connect : Command
 	{
 		public override string Name {
-			get { return "debug"; }
+			get { return "connect"; }
 		}
 		
 		public override string Description {
-			get { return "Runs an assembly on a BlackBerry device in dev mode."; }
+			get { return "Starts the SSH daemon on the device."; }
 		}
 		
 		public override void Execute (IList<string> parameters)
 		{
-			var appName = Path.GetFileNameWithoutExtension (parameters [0]);
 			var device = GetDevice (parameters);
-
-			Package p = Application.GetCommand<Package> ();
-			p.CreateAppDescriptor (parameters [0], device.Architecture, true);
-
-			// TODO: blackberry-nativepackager -package assemblyname.bar app-descriptor.xml
-			// -devMode -target bar-debug -installApp -launchApp -device XXX -password XXX
-			// /Developer/SDKs/bbndk-10.0.4-beta/host/macosx/x86/usr/bin/blackberry-nativepackager
-			var cmd = String.Format ("{0}/usr/bin/blackberry-nativepackager -package {1}.bar {2} " +
-			                         "-devMode -target bar-debug -installApp -launchApp -device {3} -password {4}",
+			var cmd = String.Format ("{0}/usr/bin/blackberry-connect {1} -password {2} " +
+			                         "-sshPublicKey {3}",
 			                         Application.Configuration.NativeSDKHostDir,
-			                         appName,
-			                         "app-descriptor.xml",
 			                         device.IP,
-			                         device.Password);
+			                         device.Password,
+			                         Application.Configuration.SSHPublicKey);
 			Run (cmd);
 		}
-
+		
 		private static void Run (string cmd)
 		{
 			try {
@@ -46,23 +37,23 @@ namespace MonoBerry.Tool
 				throw new Error (String.Format ("Error running command {0}: {1}", cmd, e.Message));
 			}
 		}
-
+		
 		private Device GetDevice (IList<string> parameters)
 		{
 			var devs = Application.Configuration.GetDevices ();
-
+			
 			if (devs.Count == 1) {
 				var e = devs.Values.GetEnumerator ();
 				e.MoveNext ();
 				return e.Current;
 			} else if (devs.Count == 0) {
 				throw new Error ("No devices configured.");
-			} else if (parameters.Count == 2) {
-				return devs [parameters [1]];
+			} else if (parameters.Count == 1) {
+				return devs [parameters [0]];
 			}
-
+			
 			throw new Error ("Please specify a device.");
 		}
 	}
-
+	
 }

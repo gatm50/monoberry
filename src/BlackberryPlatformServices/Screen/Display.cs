@@ -1,13 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using BlackberryPlatformServices.Screen.Types;
 
 namespace BlackberryPlatformServices.Screen
 {
-    class Display
-    {
-    }
+	public class Display
+	{
+		[DllImport ("screen")]
+		static extern int screen_get_display_property_iv (IntPtr handle, PropertyType prop, out int val);
+		
+		[DllImport ("screen")]
+        static extern int screen_get_display_property_iv(IntPtr handle, PropertyType prop, [Out] int[] vals);
+		
+		[DllImport ("screen")]
+        static extern int screen_set_display_property_iv(IntPtr handle, PropertyType prop, ref int val);
+
+		IntPtr handle;
+
+		public Display (IntPtr hnd) {
+			handle = hnd;
+		}
+
+		public Size Size {
+			get {
+				var rect = new int [2];
+                screen_get_display_property_iv(handle, PropertyType.SCREEN_PROPERTY_SIZE, rect);
+				return new Size (rect[0], rect[1]);
+			}
+		}
+
+		public DisplayType Type {
+			get {
+                return (DisplayType)GetIntProperty(PropertyType.SCREEN_PROPERTY_TYPE);
+			}
+		}
+
+        int GetIntProperty(PropertyType p)
+		{
+			int result;
+			if (screen_get_display_property_iv (handle, p, out result) != 0) {
+				throw new Exception ("Unable to read display property " + p);
+			}
+			return result;
+		}
+
+        void SetIntProperty(PropertyType p, int val)
+		{
+			if (screen_set_display_property_iv (handle, p, ref val) != 0) {
+				throw new Exception ("Unable to set display property " + p);
+			}
+		}
+
+	}
 }
 
 
