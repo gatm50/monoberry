@@ -15,12 +15,13 @@ namespace HelloWorldExample
     {
         public void Run()
         {
-            using (Context ctx = new Context())
+            using (Context ctx = new Context(ContextType.SCREEN_APPLICATION_CONTEXT))
             {
                 Window wind = this.CreateBackgroundWindow("TheTeam", ctx);
                 for (int i = 0; i < 15; i++)
                 {
-                    wind.Buffers[0].Fill(68199896);
+                    Blits.Fill(ctx, wind.Buffers[0], 68199896);
+                    //wind.Buffers[0].Fill(68199896);
                     wind.Render(wind.Buffers[0]);
                     System.Threading.Thread.Sleep(200);
                 }
@@ -43,7 +44,7 @@ namespace HelloWorldExample
 
             int color = unchecked((int)13493586);
             wind.Color = color;
-            
+
             wind.CreateBuffer();
             wind.SetDimensions(700, 500);
 

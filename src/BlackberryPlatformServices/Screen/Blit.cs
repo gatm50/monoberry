@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using BlackberryPlatformServices.Screen.Types;
 
@@ -133,16 +130,7 @@ namespace BlackberryPlatformServices.Screen
 		[DllImport("screen")]
 		static extern int screen_flush_blits(IntPtr ctx, int flags);
 
-		Context _context;
-		internal IntPtr _buffer;
-
-		public Blits(Context ctx, IntPtr buf)
-		{
-			_context = ctx;
-			_buffer = buf;
-		}
-
-		public void Blit(Buffer src, int width, int height, int srcX = 0, int srcY = 0, int dstX = 0, int dstY = 0, int transparency = (int)TransparencyTypes.SCREEN_TRANSPARENCY_NONE, int globalAlpha = 255, int scaleQuality = (int)ScaleQualityType.SCREEN_QUALITY_NORMAL)
+		public static void Blit(Context ctx, Buffer src, Buffer dst, int width, int height, int srcX = 0, int srcY = 0, int dstX = 0, int dstY = 0, int transparency = (int)TransparencyTypes.SCREEN_TRANSPARENCY_NONE, int globalAlpha = 255, int scaleQuality = (int)ScaleQualityType.SCREEN_QUALITY_NORMAL)
 		{
 			var attribs = new int[] {
 				(int)BlitAttribute.SCREEN_BLIT_SOURCE_X,
@@ -170,11 +158,14 @@ namespace BlackberryPlatformServices.Screen
 				(int)BlitAttribute.SCREEN_BLIT_END
 			};
 
-			if (screen_blit(_context.Handle, _buffer, src.buffer, attribs) != 0)
+			if (src == null)
+				throw new Exception("Error blitting. The Buffer source cannot be null.");
+
+			if (screen_blit(ctx.Handle, dst.Handle, src.Handle, attribs) != 0)
 				throw new Exception("Error blitting.");
 		}
 
-		public void Fill(UInt32 color, int dstX = 0, int dstY = 0, int transparency = (int)TransparencyTypes.SCREEN_TRANSPARENCY_NONE, int globalAlpha = 255, int scaleQuality = (int)ScaleQualityType.SCREEN_QUALITY_NORMAL)
+		public static void Fill(Context ctx, Buffer src, UInt32 color, int dstX = 0, int dstY = 0, int transparency = (int)TransparencyTypes.SCREEN_TRANSPARENCY_NONE, int globalAlpha = 255, int scaleQuality = (int)ScaleQualityType.SCREEN_QUALITY_NORMAL)
 		{
 			var attribs = new int[] {
 				(int)BlitAttribute.SCREEN_BLIT_COLOR,
@@ -183,20 +174,27 @@ namespace BlackberryPlatformServices.Screen
 				dstX,
 				(int)BlitAttribute.SCREEN_BLIT_DESTINATION_Y,
 				dstY,
-				(int)BlitAttribute.SCREEN_BLIT_TRANSPARENCY,
-				transparency,
+				//(int)BlitAttribute.SCREEN_BLIT_TRANSPARENCY, //Error
+				//transparency,
 				(int)BlitAttribute.SCREEN_BLIT_GLOBAL_ALPHA,
 				globalAlpha,
-				(int)BlitAttribute.SCREEN_BLIT_SCALE_QUALITY,
-				scaleQuality,
+				//(int)BlitAttribute.SCREEN_BLIT_SCALE_QUALITY, //Error
+				//scaleQuality,
 				(int)BlitAttribute.SCREEN_BLIT_END
 			};
-			screen_fill(_context.Handle, _buffer, attribs);
+
+			if (src == null)
+				throw new Exception("Error blitting. The CurrentBuffer is null.");
+
+			int res = screen_fill(ctx.Handle, src.Handle, attribs);
+			if (res != 0)
+				throw new Exception("Error blitting. Error: " + res);
 		}
 
-		public void FlushBlits(int flushingType = (int)FlushingType.SCREEN_WAIT_IDLE)
+		public static void FlushBlits(Context ctx, int flushingType = (int)FlushingType.SCREEN_WAIT_IDLE)
 		{
-			screen_flush_blits(_context.Handle, flushingType);
+			if (screen_flush_blits(ctx.Handle, flushingType) != 0)
+				throw new Exception("Error blitting.");
 		}
 	}
 }

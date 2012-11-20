@@ -11,7 +11,7 @@ namespace HelloWorldExample
         public void Run()
         {
             using (var nav = new Navigator())
-            using (var ctx = new Context())
+            using (var ctx = new Context(ContextType.SCREEN_APPLICATION_CONTEXT))
             using (var win = new Window(ctx, WindowType.SCREEN_APPLICATION_WINDOW))
             {
                 string groupName = "TheTeam";
@@ -19,10 +19,11 @@ namespace HelloWorldExample
 
                 win.CreateBuffers(10);
                 win.Identifier = "parent";
+
                 var r = new Random();
                 foreach (var b in win.Buffers)
                 {
-                    b.Fill((uint)r.Next());
+                    Blits.Fill(ctx, b, (uint)r.Next());
                     win.Render(b);
                     System.Threading.Thread.Sleep(200);
                 }
@@ -31,7 +32,8 @@ namespace HelloWorldExample
                 childWindow.JoinWindowGroup(groupName);
                 childWindow.CreateBuffer();
                 childWindow.Identifier = "child";
-                childWindow.Buffers[0].Fill(50);
+
+                Blits.Fill(ctx, childWindow.Buffers[0], 50);
                 childWindow.Render(childWindow.Buffers[0]);
 
                 var run = true;
