@@ -271,7 +271,6 @@ namespace BlackberryPlatformServices.Screen
 		internal IntPtr Handle
 		{
 			get { return _handle; }
-			set { _handle = value; }
 		}
 
 		Context _context;
