@@ -766,6 +766,11 @@ namespace BlackberryPlatformServices
             }
         }
 
+        public static int RegisterDomain()
+        {
+            return bps_register_domain();
+        }
+
         public static void Run()
         {
             while (NextEvent() != null) { }

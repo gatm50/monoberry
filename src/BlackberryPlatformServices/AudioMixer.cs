@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace BlackberryPlatformServices
@@ -79,7 +76,7 @@ namespace BlackberryPlatformServices
         //     */
         //    AUDIOMIXER_OUTPUT_LINEOUT   = 11,
         //} audiomixer_output_t;
-        public enum OutputType
+        public enum OutputType : int
         {
             AUDIOMIXER_OUTPUT_DEFAULT = 0,
             AUDIOMIXER_OUTPUT_SPEAKER = 1,
@@ -184,7 +181,7 @@ namespace BlackberryPlatformServices
         //     */
         //    AUDIOMIXER_INPUT_LINEOUT    = AUDIOMIXER_OUTPUT_LINEOUT,
         //} audiomixer_input_t;
-        public enum InputType
+        public enum InputType : int
         {
             AUDIOMIXER_INPUT_DEFAULT = OutputType.AUDIOMIXER_OUTPUT_DEFAULT,
             AUDIOMIXER_INPUT = OutputType.AUDIOMIXER_OUTPUT_DEFAULT,
@@ -232,7 +229,7 @@ namespace BlackberryPlatformServices
         //     */
         //    AUDIOMIXER_MODE_VOICE        = 4,
         //} audiomixer_mode_t;
-        public enum ModeType
+        public enum ModeType : int
         {
             AUDIOMIXER_MODE_UNRECOGNIZED = 0,
             AUDIOMIXER_MODE_AUDIO = 1,

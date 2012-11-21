@@ -38,14 +38,18 @@ namespace HelloWorldExample
 
                 SoundPlayer sp = new SoundPlayer(SoundPlayer.SystemSounds.EventDeviceUntether);
                 sp.PlaySound();
+                VirtualKeyboard kb = new VirtualKeyboard();
+                Orientation or= new Orientation();
                 var run = true;
+                string message=string.Format("Monoberry Runtime!. BPS Version: {0} Direction: {1}",PlatformServices.GetVersionBPS().ToString(), or.CurrentDirection.ToString());
                 while (run)
                 {
-                    Dialog.Alert("CLOSE ME!", "Monoberry Runtime BPS Version" + PlatformServices.GetVersionBPS().ToString(),
+                    Dialog.Alert("CLOSE ME!", message,
                         //new Button ("Timer", Timer),
                         //new Button ("Camera", Cam),
                         //new Button ("Messages", () => nav.Invoke ("messages://")),
-                                  new Button("Play Random Sound", () => this.PlaySound(sp,r)),
+                                  //new Button("Show Keyboard", () => kb.Show()),
+                                  new Button("Play Random Sound", () => this.PlaySound(sp, r)),
                                   new Button("Badge", () => nav.HasBadge = true),
                                   new Button("Browser", () => nav.Invoke("http://www.bing.com/")),
                                   new Button("Close", () => run = false));
@@ -54,7 +58,7 @@ namespace HelloWorldExample
         }
         private void PlaySound(SoundPlayer sp, Random r)
         {
-            sp.FileName= (SoundPlayer.SystemSounds) r.Next(15);
+            sp.FileName = (SoundPlayer.SystemSounds)r.Next(15);
             sp.PlaySound();
         }
     }

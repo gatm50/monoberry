@@ -42,6 +42,7 @@
     <Compile Include="Dialog\Dialog.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Navigator.cs" />
+    <Compile Include="Orientation.cs" />
     <Compile Include="PlatformServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screen\Blit.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Screen\Window.cs" />
     <Compile Include="Screen\Types\WindowType.cs" />
     <Compile Include="SoundPlayer.cs" />
+    <Compile Include="VirtualKeyboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Copyright.txt" />
