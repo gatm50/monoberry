@@ -36,18 +36,26 @@ namespace HelloWorldExample
                 Blits.Fill(ctx, childWindow.Buffers[0], 50);
                 childWindow.Render(childWindow.Buffers[0]);
 
+                SoundPlayer sp = new SoundPlayer(SoundPlayer.SystemSounds.EventDeviceUntether);
+                sp.PlaySound();
                 var run = true;
                 while (run)
                 {
-                    Dialog.Alert("CLOSE ME!", "Monoberry Runtime XDD" + win.Identifier,
+                    Dialog.Alert("CLOSE ME!", "Monoberry Runtime BPS Version" + PlatformServices.GetVersionBPS().ToString(),
                         //new Button ("Timer", Timer),
                         //new Button ("Camera", Cam),
                         //new Button ("Messages", () => nav.Invoke ("messages://")),
+                                  new Button("Play Random Sound", () => this.PlaySound(sp,r)),
                                   new Button("Badge", () => nav.HasBadge = true),
                                   new Button("Browser", () => nav.Invoke("http://www.bing.com/")),
                                   new Button("Close", () => run = false));
                 }
             }
+        }
+        private void PlaySound(SoundPlayer sp, Random r)
+        {
+            sp.FileName= (SoundPlayer.SystemSounds) r.Next(15);
+            sp.PlaySound();
         }
     }
 }

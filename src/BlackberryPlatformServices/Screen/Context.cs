@@ -295,14 +295,8 @@ namespace BlackberryPlatformServices.Screen
         [DllImport("screen")]
         static extern int screen_set_context_property_pv(IntPtr ctx, PropertyType pname, IntPtr[] param);
 
-        [DllImport("screen")]
-        static extern int screen_get_domain();
-
-        [DllImport("bps")]
-        static extern int screen_request_events(IntPtr ctx);
-
-        [DllImport("bps")]
-        static extern int screen_stop_events(IntPtr ctx);
+        //[DllImport("screen")]
+        //static extern int screen_get_domain();
         #endregion
 
         IntPtr _handle;
@@ -354,8 +348,10 @@ namespace BlackberryPlatformServices.Screen
                 // TODO: read errno to describe problem
                 throw new Exception("Unable to create screen context");
             }
-            screen_request_events(_handle);
-            _eventDomain = screen_get_domain();
+
+            Screen.RequestEvent(this);
+            _eventDomain = Screen.GetDomain();
+
             PlatformServices.AddEventHandler(_eventDomain, HandleEvent);
         }
 
@@ -365,7 +361,7 @@ namespace BlackberryPlatformServices.Screen
                 return;
 
             PlatformServices.RemoveEventHandler(_eventDomain);
-            screen_stop_events(_handle);
+            Screen.StopEventFromContext(this);
             screen_destroy_context(_handle);
             RemoveInstance(_type);
 

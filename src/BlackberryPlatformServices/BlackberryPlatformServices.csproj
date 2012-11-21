@@ -46,6 +46,7 @@
     <Compile Include="Screen\Blit.cs" />
     <Compile Include="Screen\Device.cs" />
     <Compile Include="Screen\Display.cs" />
+    <Compile Include="Screen\Screen.cs" />
     <Compile Include="Screen\ScreenDebugging.cs" />
     <Compile Include="Screen\ScreenEffect.cs" />
     <Compile Include="Screen\ScreenGroup.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Screen\Types\WindowMetricCountType.cs" />
     <Compile Include="Screen\Window.cs" />
     <Compile Include="Screen\Types\WindowType.cs" />
+    <Compile Include="SoundPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Copyright.txt" />

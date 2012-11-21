@@ -52,6 +52,7 @@
   <ItemGroup>
     <Content Include="icon.png" />
     <Content Include="monoberry-descriptor.xml" />
+    <Content Include="soundfile.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Monoberry_Builder.ps1" />
