@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="ApplicationDescriptor.cs" />
     <Compile Include="AudioMixer.cs" />
+    <Compile Include="BBUtil.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Dialog\Button.cs" />
     <Compile Include="Dialog\Dialog.cs" />
