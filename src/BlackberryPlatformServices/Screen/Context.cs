@@ -341,17 +341,16 @@ namespace BlackberryPlatformServices.Screen
 
         public Context(ContextType type)
         {
-            PlatformServices.Initialize();
             _type = type;
             if (screen_create_context(out _handle, type) != 0)
             {
                 // TODO: read errno to describe problem
                 throw new Exception("Unable to create screen context");
             }
-
+            PlatformServices.Initialize();
             Screen.RequestEvent(this);
-            _eventDomain = Screen.GetDomain();
 
+            _eventDomain = Screen.GetDomain();
             PlatformServices.AddEventHandler(_eventDomain, HandleEvent);
         }
 

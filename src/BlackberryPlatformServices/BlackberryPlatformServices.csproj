@@ -42,7 +42,15 @@
     <Compile Include="Dialog\Button.cs" />
     <Compile Include="Dialog\Dialog.cs" />
     <Compile Include="Event.cs" />
-    <Compile Include="Navigator.cs" />
+    <Compile Include="Led.cs" />
+    <Compile Include="Multimedia\MediaCommonEnumerators.cs" />
+    <Compile Include="Multimedia\MediaController.cs" />
+    <Compile Include="Multimedia\MediaPlayer.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Multimedia\Multimedia.cs" />
+    <Compile Include="Navigator\Navigator.cs" />
+    <Compile Include="Navigator\NavigatorEnums.cs" />
+    <Compile Include="Navigator\NavigatorInvoke.cs" />
     <Compile Include="Orientation.cs" />
     <Compile Include="PlatformServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

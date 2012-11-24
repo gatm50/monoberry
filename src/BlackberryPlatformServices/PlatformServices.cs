@@ -451,6 +451,13 @@ namespace BlackberryPlatformServices
         //     */
         //    BPS_IO_EXCEPT   = 1 << 2,
         //} bps_io_events_t;
+        [Flags]
+        public enum IOEvents
+        {
+            BPS_IO_INPUT = 1 << 0,
+            BPS_IO_OUTPUT = 1 << 1,
+            BPS_IO_EXCEPT = 1 << 2,
+        }
 
         ///**
         // * @brief Add a file descriptor to the currently active channel
@@ -568,8 +575,6 @@ namespace BlackberryPlatformServices
         //BPS_API int bps_add_sigevent_handler(struct sigevent *sigevent,
         //                                     int (*sigevent_handler)(void *), 
         //                                     void *data);
-
-
 
         ///**
         // * @brief Remove the sigevent handler from the active channel
@@ -785,6 +790,18 @@ namespace BlackberryPlatformServices
         {
             bps_shutdown();
             System.Environment.Exit(code);
+        }
+
+        public static void GetEvent(out Event e, int timeout)
+        {
+            IntPtr handle;
+            bps_get_event(out handle, timeout);
+            e = new Event(handle);
+        }
+
+        public static int GetDomainByEvent(IntPtr handle)
+        {
+            return bps_event_get_domain(handle);
         }
     }
 }

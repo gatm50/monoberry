@@ -2,6 +2,7 @@
 using BlackberryPlatformServices;
 using BlackberryPlatformServices.Screen;
 using BlackberryPlatformServices.Screen.Types;
+using BlackberryPlatformServices.Dialog;
 
 namespace HelloWorldExample
 {
@@ -20,10 +21,10 @@ namespace HelloWorldExample
                 var brush = bufs[1];
 
                 Blits.Fill(ctx, pic, 0xffff0000);
-                Blits.Fill(ctx, brush, 0xff000000);
+                Blits.Fill(ctx, brush, 64441078);
                 win.Render(pic);
 
-                //nav.OnSwipeDown = () => Dialog.Alert ("#MonoBerry", "Another Event Loop", new Button ("Ack"));
+                nav.OnSwipeDown = () => Dialog.Alert ("#MonoBerry", "Another Event Loop", new Button ("Ack"));
                 ctx.OnFingerTouch = (x, y) =>
                 {
                     Blits.Blit(ctx, brush, pic, 0, 0, 10, 10, Math.Max(x - 5, 0), Math.Max(y - 5, 0));

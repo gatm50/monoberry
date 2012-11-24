@@ -40,18 +40,26 @@
     <Compile Include="ExampleBlackberryDocs.cs" />
     <Compile Include="ExampleHelloWorld.cs" />
     <Compile Include="ExamplePaint.cs" />
+    <Compile Include="FallingBlocks.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RotatingSquare.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlackberryPlatformServices\BlackberryPlatformServices.csproj">
       <Project>{D99DAA9D-7A37-4F5B-BE85-84DDCD66AF89}</Project>
       <Name>BlackberryPlatformServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenTKBlackberry\OpenTKBlackberry.csproj">
+      <Project>{EF48C797-3696-4C7A-9F7A-AA9805D04498}</Project>
+      <Name>OpenTKBlackberry</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.png" />
-    <Content Include="monoberry-descriptor.xml" />
+    <Content Include="monoberry-descriptor.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Monoberry_Builder.ps1" />

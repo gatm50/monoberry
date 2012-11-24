@@ -590,9 +590,9 @@ namespace BlackberryPlatformServices.Screen
 
         IntPtr _handle;
 
-        public ScreenEvent(IntPtr evenT)
+        public ScreenEvent(IntPtr _event)
         {
-            _handle = evenT;
+            _handle = _event;
         }
 
         public static ScreenEvent FromEventHandle(IntPtr e)

@@ -152,6 +152,11 @@ namespace BlackberryPlatformServices
         #endregion
 
         protected IntPtr _handle;
+        public IntPtr Handle
+        {
+            get { return _handle; }
+        }
+
         private bps_event_payload_t _payload;
 
         internal Event(IntPtr h)

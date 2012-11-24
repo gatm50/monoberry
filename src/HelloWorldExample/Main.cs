@@ -13,9 +13,11 @@ namespace helloworld
     {
         public static void Main(string[] args)
         {
-            ExampleHelloWorld ex = new ExampleHelloWorld();
+            //ExampleHelloWorld ex = new ExampleHelloWorld();
+            RotatingSquare ex = new RotatingSquare();
             //ExamplePaint ex = new ExamplePaint();
             //ExampleBlackberryDocs ex = new ExampleBlackberryDocs();
+            //FallingBlocks ex = new FallingBlocks();
             ex.Run();
         }
 
