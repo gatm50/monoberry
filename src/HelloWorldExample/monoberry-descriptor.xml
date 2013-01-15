@@ -20,6 +20,7 @@
   <env var="MONO_LOG_LEVEL" value="debug" />
   <!--<env var="MONO_LOG_MASK" value="dll" />-->
   <!--  2. Include any needed libs -->
+  <!--  .NET 4.0 Compatible Assemblies -->
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\mscorlib.dll">monoberry/lib/mono/4.0/mscorlib.dll</asset>
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.dll">monoberry/lib/mono/4.0/System.dll</asset>
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.Drawing.dll">monoberry/lib/mono/4.0/System.Drawing.dll</asset>

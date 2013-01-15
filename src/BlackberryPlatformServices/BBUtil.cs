@@ -8,7 +8,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using BlackberryPlatformServices;
 using BlackberryPlatformServices.Screen;
 
 namespace BlackberryPlatformServices

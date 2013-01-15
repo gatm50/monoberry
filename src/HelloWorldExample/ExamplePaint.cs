@@ -33,6 +33,11 @@ namespace HelloWorldExample
                 ctx.OnFingerMove = ctx.OnFingerTouch;
                 ctx.OnFingerRelease = ctx.OnFingerTouch;
 
+                nav.OnExit = () => 
+                { 
+                    Console.WriteLine("I am asked to shutdown!?!"); PlatformServices.Shutdown(0); 
+                };
+
                 PlatformServices.Run();
             }
         }
