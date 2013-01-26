@@ -37,6 +37,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExampleGLCube.cs" />
+    <Compile Include="ExampleGLTriangle.cs" />
     <Compile Include="ExampleBlackberryDocs.cs" />
     <Compile Include="ExampleHelloWorld.cs" />
     <Compile Include="ExamplePaint.cs" />

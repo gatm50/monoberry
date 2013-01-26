@@ -223,7 +223,7 @@ namespace BlackberryPlatformServices
         // */
         //BPS_API int bps_get_event(bps_event_t **event, int timeout_ms);
         [DllImport("bps")]
-        static extern void bps_get_event(out IntPtr handle, int timeout_ms);
+        static extern int bps_get_event(out IntPtr handle, int timeout_ms);
 
         ///**
         // * @brief Post an event to the active channel
@@ -729,28 +729,36 @@ namespace BlackberryPlatformServices
 
         public static Event NextEvent(int timeoutMillis)
         {
+            timeoutMillis = 0;
             IntPtr handle;
             Action<IntPtr> handler = null;
-
             IsRunning = true;
 
             while (IsRunning)
             {
-                bps_get_event(out handle, timeoutMillis);
-                if (handle == IntPtr.Zero)
-                {
+                int res = bps_get_event(out handle, timeoutMillis);
+                if (res != (int) BPSResponse.BPS_SUCCESS) // handle == IntPtr.Zero
                     break;
-                }
+
+                if (handle == IntPtr.Zero)
+                    break;
+
                 var domain = bps_event_get_domain(handle);
-                if (!eventHandlers.ContainsKey(domain))
+                //if (!eventHandlers.ContainsKey(domain))
+                if (domain == Screen.Screen.GetDomain())
                 {
                     return new Event(handle);
+                }
+                else if ((domain == Navigator.navigator_get_domain())
+                        && ((uint)Navigator.EventType.NAVIGATOR_EXIT == Event.bps_event_get_code(handle)))
+                {
+                    return null;
                 }
                 handler = eventHandlers[domain];
                 handler(handle);
             }
 
-            return null;
+            return new Event();
         }
 
         internal static IntPtr NextDomainEvent(int domain)
@@ -776,9 +784,16 @@ namespace BlackberryPlatformServices
             return bps_register_domain();
         }
 
-        public static void Run()
+        public static void Run(Func<int> process)
         {
-            while (NextEvent() != null) { }
+            while (true)
+            {
+                if (NextEvent() == null)
+                    break;
+
+                if(process != null)
+                    process();
+            }
         }
 
         public static void Stop()

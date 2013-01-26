@@ -382,6 +382,7 @@ namespace BlackberryPlatformServices.Screen
             IntPtr handle = IntPtr.Zero; ;
             var res=new IntPtr[] { handle };
             ev.GetVoidProperty(PropertyType.SCREEN_PROPERTY_WINDOW, ref res);
+            //Console.WriteLine("Break Point, res[0]= " + res[0]);
             handle = res[0];
 
             if (!_windows.ContainsKey(handle))

@@ -54,7 +54,7 @@ namespace BlackberryPlatformServices
         // */
         //BPS_API int navigator_get_domain();
         [DllImport("bps")]
-        static extern int navigator_get_domain();
+        public static extern int navigator_get_domain();
 
         ///**
         // * @brief Open a URI in the navigator

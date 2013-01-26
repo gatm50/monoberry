@@ -12,14 +12,18 @@ namespace HelloWorldExample
         BBUtil _util;
         float[] vertices = new float[8];
         float[] colors = new float[16];
-        float[] matrix = new float[16] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+        float[] matrix = new float[16] { 
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1 
+        };
         int _positionLoc;
         int _vertexID;
         int _colorLoc;
         int _colorID;
         int _transformLoc;
         int _program;
-        Context _ctx;
 
         public RotatingSquare()
         {
@@ -27,38 +31,47 @@ namespace HelloWorldExample
 
         public void Run()
         {
-            _ctx = new Context(BlackberryPlatformServices.Screen.Types.ContextType.SCREEN_APPLICATION_CONTEXT);
-            _util = new BBUtil(_ctx);
-
-            this.Initialize();
-            var nav = new Navigator();
-            nav.RotationLock = false;
-            bool exit_application = false;
-
-            while (!exit_application)
+            using (var nav = new Navigator())
+            using (var ctx = new Context(ContextType.SCREEN_APPLICATION_CONTEXT))
+            using (var win = new Window(ctx))
             {
-                //Event e = null;
-                //for (; ; )
+                _util = new BBUtil(ctx);
+
+                this.Initialize();
+                nav.RotationLock = false;
+                bool exit_application = false;
+
+                nav.OnExit = () =>
+                {
+                    Console.WriteLine("I am asked to shutdown!?!");
+                    PlatformServices.Shutdown(0);
+                    exit_application = true;
+                };
+                
+                //while (!exit_application)
                 //{
-                //    PlatformServices.GetEvent(out e, 0);
-                //    if (e != null)
-                //    {
-                //        int domain = PlatformServices.GetDomainByEvent(e.Handle);
+                    //Event e = null;
+                    //for (; ; )
+                    //{
+                    //    PlatformServices.GetEvent(out e, 0);
+                    //    if (e != null)
+                    //    {
+                    //        int domain = PlatformServices.GetDomainByEvent(e.Handle);
 
-                //        if (domain == Screen.GetDomain())
-                //            this.handleScreenEvent(e);
-                //        else if (domain == nav.Domain && (int)e.Code == (int)Navigator.EventType.NAVIGATOR_EXIT)
-                //            exit_application = true;
-                //    }
-                //    else
-                //        break;
+                    //        if (domain == Screen.GetDomain())
+                    //            this.handleScreenEvent(e);
+                    //        else if (domain == nav.Domain && (int)e.Code == (int)Navigator.EventType.NAVIGATOR_EXIT)
+                    //            exit_application = true;
+                    //    }
+                    //    else
+                    //        break;
+                    //}
+
+                    this.Render();
                 //}
-                this.Render();
+                PlatformServices.Run(this.Render);
+                _util.Dispose();
             }
-
-            PlatformServices.Shutdown();
-            _util.Dispose();
-            _ctx.Dispose();
         }
 
         private void handleScreenEvent(Event _event)
@@ -153,13 +166,16 @@ namespace HelloWorldExample
             GL.CompileShader(fs);
             GL.GetShader(fs, ShaderParameter.CompileStatus, out status);
             if (status == 0)
+            {
+                GL.DeleteShader(vs);
                 GL.DeleteShader(fs);
-
+            }
+                
             _program = GL.CreateProgram();
             GL.AttachShader(_program, vs);
             GL.AttachShader(_program, fs);
             GL.LinkProgram(_program);
-
+          
             GL.GetProgram(_program, ProgramParameter.LinkStatus, out status);
             GL.UseProgram(_program);
 
@@ -172,7 +188,8 @@ namespace HelloWorldExample
                 float top = 1.0f;
                 float zNear = -1.0f;
                 float zFar = 1.0f;
-                float[] ortho = new float[16] {(float)2.0 / (right-left), 0, 0, 0,
+                float[] ortho = new float[16] 
+                                    {(float)2.0 / (right-left), 0, 0, 0,
                                     0,(float) 2.0 / (top-bottom), 0, 0,
                                     0, 0,(float) -2.0 / (zFar - zNear), 0,
                                     -(right+left)/(right-left), -(top+bottom)/(top-bottom), -(zFar+zNear)/(zFar-zNear), 1};
@@ -190,11 +207,11 @@ namespace HelloWorldExample
             //// Generate vertex and color buffers and fill with data
             GL.GenBuffers(1, out _vertexID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexID);
-            GL.BufferData<float>(BufferTarget.ArrayBuffer, (IntPtr)(vertices.Length * sizeof(float)), vertices, BufferUsage.StaticDraw);
+            //GL.BufferData<float>(BufferTarget.ArrayBuffer, (IntPtr)(vertices.Length * sizeof(float)), vertices, BufferUsage.StaticDraw);
 
             GL.GenBuffers(1, out _colorID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _colorID);
-            GL.BufferData<float>(BufferTarget.ArrayBuffer, (IntPtr)(colors.Length * sizeof(float)), colors, BufferUsage.StaticDraw);
+            //GL.BufferData<float>(BufferTarget.ArrayBuffer, (IntPtr)(colors.Length * sizeof(float)), colors, BufferUsage.StaticDraw);
 
             // Perform the same translation as the GLES1 version
             matrix[12] = (float)(surface_width) / (float)(surface_height) / 2;
@@ -202,7 +219,7 @@ namespace HelloWorldExample
             GL.UniformMatrix4(_transformLoc, 1, false, matrix);
         }
 
-        private void Render()
+        private int Render()
         {
             // Increment the angle by 0.5 degrees
             float angle = 0.0f;
@@ -210,7 +227,7 @@ namespace HelloWorldExample
 
             //Typical render pass
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            
+
             // Enable and bind the vertex information
             GL.EnableVertexAttribArray(_positionLoc);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexID);
@@ -226,16 +243,19 @@ namespace HelloWorldExample
             matrix[2] = (float)-Math.Sin(angle);
             matrix[8] = (float)Math.Sin(angle);
             matrix[10] = (float)Math.Cos(angle);
-
             GL.UniformMatrix4(_transformLoc, 1, false, matrix);
 
+            // Same draw call as in GLES1.
             GL.DrawArrays(BeginMode.TriangleStrip, 0, 4);
-
+            
+            // Disable attribute arrays
             GL.DisableVertexAttribArray(_positionLoc);
             GL.DisableVertexAttribArray(_colorLoc);
 
-            Egl.SwapBuffers(_util.Display, _util.Surface);
-            //_util.Swap();
+            //Egl.SwapBuffers(_util.Display, _util.Surface);
+            _util.Swap();//previously commented
+
+            return 1;
         }
     }
 }

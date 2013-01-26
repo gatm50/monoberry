@@ -38,7 +38,7 @@ namespace BlackberryPlatformServices
         // */
         //BPS_API unsigned int bps_event_get_code(bps_event_t *event);
         [DllImport("bps")]
-        static extern uint bps_event_get_code(IntPtr handle);
+        public static extern uint bps_event_get_code(IntPtr handle);
 
 
         ///*

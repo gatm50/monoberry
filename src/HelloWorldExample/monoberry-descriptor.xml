@@ -18,14 +18,20 @@
   <!--<env var="LD_LIBRARY_PATH" value="app/native/lib"/>-->
   <env var="MONO_PATH" value="app/native/monoberry/lib" />
   <env var="MONO_LOG_LEVEL" value="debug" />
+  <env var="LD_LIBRARY_PATH" value="app/native/lib"/>
   <!--<env var="MONO_LOG_MASK" value="dll" />-->
   <!--  2. Include any needed libs -->
+  <!--  .NET 4.0 Compatible Assemblies -->
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\mscorlib.dll">monoberry/lib/mono/4.0/mscorlib.dll</asset>
-  <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.dll">monoberry/lib/mono/4.0/System.dll</asset>
+  <!--<asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.dll">monoberry/lib/mono/4.0/System.dll</asset>
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.Drawing.dll">monoberry/lib/mono/4.0/System.Drawing.dll</asset>
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\System.Xml.dll">monoberry/lib/mono/4.0/System.Xml.dll</asset>
+  <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\4.0\Mono.Debugger.Soft.dll">monoberry/lib/mono/4.0/Mono.Debugger.Soft.dll</asset>
+  <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\lib\mono\gac">monoberry/lib/mono/gac</asset>-->
   <!--  3. Include the (platform dependent) runtime and use it as entry point -->
+  <!--<asset path="C:\Users\Gustavo\Desktop\monoberry\mono\bin\mono" entry="true" type="Qnx/Elf">monoberry/bin/mono</asset>-->
   <asset path="C:\Users\Gustavo\Desktop\monoberry\mono\bin\mono" entry="true" type="Qnx/Elf">monoberry/bin/mono</asset>
+ 
   <!--  4. Include our own (platform independent) code -->
   <asset path="bin/Debug">bin</asset>
   <!--  5. Tell the Mono runtime to run our code. -->
@@ -48,7 +54,7 @@
   <!--  <action>read_geolocation</action> -->
   <!--  <action>use_camera</action> -->
   <!--  <action>access_internet</action> -->
-   <!--<action system="true">play_audio</action>--> 
+  <action system="true">play_audio</action>
   <!--  <action>post_notification</action> -->
   <!--  <action>set_audio_volume</action> -->
   <!--  <action>read_device_identifying_information</action> -->

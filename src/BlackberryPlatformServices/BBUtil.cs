@@ -8,7 +8,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using BlackberryPlatformServices;
 using BlackberryPlatformServices.Screen;
 
 namespace BlackberryPlatformServices
@@ -16,7 +15,7 @@ namespace BlackberryPlatformServices
     public class BBUtil
     {
         #region DllImport
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern int bbutil_get_disp_surf(out IntPtr disp, out IntPtr surf);
         // /**
         // * Initializes EGL
@@ -25,21 +24,21 @@ namespace BlackberryPlatformServices
         // * @return EXIT_SUCCESS if initialization succeeded otherwise EXIT_FAILURE
         // */
         //int bbutil_init_egl(screen_context_t ctx);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern int bbutil_init_egl(IntPtr ctx);
 
         ///**
         // * Terminates EGL
         // */
         //void bbutil_terminate();
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern void bbutil_terminate();
 
         ///**
         // * Swaps default bbutil window surface to the screen
         // */
         //void bbutil_swap();
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern void bbutil_swap();
 
         ///**
@@ -51,7 +50,7 @@ namespace BlackberryPlatformServices
         // * @return pointer to font_t structure on success or NULL on failure
         // */
         //font_t* bbutil_load_font(const char* font_file, int point_size, int dpi);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern IntPtr bbutil_load_font(char[] font_file, int point_size, int dpi);
 
         ///**
@@ -59,7 +58,7 @@ namespace BlackberryPlatformServices
         // * @param font to be destroyed
         // */
         //void bbutil_destroy_font(font_t* font);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern void bbutil_destroy_font(IntPtr font);
 
         ///**
@@ -74,7 +73,7 @@ namespace BlackberryPlatformServices
         // * @param rgba color for the text to render with
         // */
         //void bbutil_render_text(font_t* font, const char* msg, float x, float y, float r, float g, float b, float a);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern void bbutil_render_text(IntPtr font, char[] msg, float x, float y, float r, float g, float b, float a);
 
         ///**
@@ -88,7 +87,7 @@ namespace BlackberryPlatformServices
         // * @param return pointer for height of a string
         // */
         //void bbutil_measure_text(font_t* font, const  char* msg, float* width, float* height);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern void bbutil_measure_text(IntPtr font, char[] msg, out float width, out float height);
 
         ///**
@@ -104,7 +103,7 @@ namespace BlackberryPlatformServices
         // */
 
         //int bbutil_load_texture(const char* filename, int* width, int* height, float* tex_x, float* tex_y, unsigned int* tex);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern int bbutil_load_texture(char[] filename, out int width, out int height, out float tex_x, out float tex_y, out IntPtr tex);
 
         ///**
@@ -116,7 +115,7 @@ namespace BlackberryPlatformServices
         // */
 
         //int bbutil_calculate_dpi(screen_context_t ctx);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern int bbutil_calculate_dpi(IntPtr ctx);
 
         ///**
@@ -128,7 +127,7 @@ namespace BlackberryPlatformServices
         // */
 
         //int bbutil_rotate_screen_surface(int angle);
-        [DllImport("BBUtil")]
+        [DllImport("BBUtils10")]
         static extern int bbutil_rotate_screen_surface(int angle);
         #endregion
 

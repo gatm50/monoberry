@@ -11,8 +11,8 @@ $descriptor_path='monoberry-descriptor.xml';
 $deploy='Deploy';
 $temp='tmp\';
 $locale='tmp\locale';
-$exe='C:\bbndk\host_10_0_9_52\win32\x86\usr\bin\blackberry-nativepackager.bat';
-$address="192.168.75.134";
+$exe='C:\bbndk\host_10_0_9_404\win32\x86\usr\bin\blackberry-nativepackager.bat';
+$address="192.168.75.135";
 $scriptPath = $MyInvocation.mycommand.path;
 #Hard-Coded name, it's necessary read it like a parameter of the script when is called from Visual Studio 
 $barName="monoberry.bar";

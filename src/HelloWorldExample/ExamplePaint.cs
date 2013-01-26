@@ -20,12 +20,12 @@ namespace HelloWorldExample
                 var pic = bufs[0];
                 var brush = bufs[1];
 
-                Blits.Fill(ctx, pic, 0xffff0000);
-                Blits.Fill(ctx, brush, 64441078);
+                Blits.Fill(ctx, pic, 64441078);
+                Blits.Fill(ctx, brush, 0xffff0000 );
                 win.Render(pic);
 
-                nav.OnSwipeDown = () => Dialog.Alert ("#MonoBerry", "Another Event Loop", new Button ("Ack"));
-                ctx.OnFingerTouch = (x, y) =>
+                nav.OnSwipeDown += (() => Dialog.Alert ("#MonoBerry", "Another Event Loop", new Button ("Ack")));
+                ctx.OnFingerTouch += (x, y) =>
                 {
                     Blits.Blit(ctx, brush, pic, 0, 0, 10, 10, Math.Max(x - 5, 0), Math.Max(y - 5, 0));
                     win.Render(pic);
@@ -33,7 +33,13 @@ namespace HelloWorldExample
                 ctx.OnFingerMove = ctx.OnFingerTouch;
                 ctx.OnFingerRelease = ctx.OnFingerTouch;
 
-                PlatformServices.Run();
+                nav.OnExit += () => 
+                { 
+                    Console.WriteLine("I am asked to shutdown!?!"); 
+                    PlatformServices.Shutdown(0); 
+                };
+
+                PlatformServices.Run(null);
             }
         }
     }
